@@ -1,0 +1,246 @@
+package logica;
+
+import java.util.Collection;
+
+public class Cassiopea extends AbstractCharacter{
+
+	private String name = "Cassiopea";
+    private int life = 10;
+    private int score = 0;
+	private int power = 10; 
+	private int lives = 1;
+	private Collection<Monster> monsters;
+	
+	private boolean gliding;
+	private boolean scratching;
+	private boolean firing;
+	
+	public void setFiring() { 
+		firing = true;
+	}
+	public void setScratching() {
+		scratching = true;
+	}
+	public void setGliding(boolean b) { 
+		gliding = b;
+	}
+	
+    protected Cassiopea(int defaultX, int defaultY) {
+		super(defaultX, defaultY, null);
+		
+	}
+    
+    public  void ScalaLife(){
+    	this.life-=10;
+    }
+
+	public String getName()
+	{
+		return this.name;
+	}
+	
+	public int getLife()
+	{
+		return this.life;
+	}
+	
+	public void setLife (int a)
+	{
+		this.life=a;
+	}
+	
+	public boolean getWalk()
+	{
+		return this.walk;
+	}
+	
+	public void setWalk(boolean livelloFinito)
+	{
+		this.walk=livelloFinito;
+	}
+	
+	public boolean getJump()
+	{
+		return this.jump;
+	}
+	
+	public void setJump(boolean livelloFinito)
+	{
+		this.jump=livelloFinito;
+	}
+	
+	public boolean getRun()
+	{
+		return this.run;
+	}
+	
+	public void setRun(boolean livelloFinito)
+	{
+		this.run=livelloFinito;
+	}
+	
+	public boolean getShoot()
+	{
+		return this.shoot;
+	}
+	
+	public void setShoot(boolean livelloFinito)
+	{
+		this.shoot=livelloFinito;
+	}
+	
+	public int getScore()
+	{
+		return this.score;
+	}
+	
+	public void setScore(int money)
+	{
+		score = score + money;
+	}
+	
+	public int getPower()
+	{
+		return this.power;
+	}
+	
+	public boolean getKeyJump()
+	{
+		return this.KeyJump;
+	}
+	
+	public void setKeyJump(boolean t)
+	{	
+		this.KeyJump=true;
+	}
+	
+	public boolean getKeyRun()
+	{
+		return this.KeyRun;
+	}
+	
+	public void setKeyRun(boolean t)
+	{
+		this.KeyRun=true;
+	}
+	
+	public boolean getKeyShoot()
+	{
+		return this.KeyShoot;
+			
+	}
+	
+	public void setKeyShoot(boolean t)
+	{
+		this.KeyShoot=true;
+	}
+
+	 public int getLives()
+	    {
+	        return lives;
+	    }
+	 
+	 public void setWorld(final World world)
+	    {
+	        this.world = world;
+	    }
+	 
+	public void attack(Monster m){
+		int c;
+		c=m.getLife()-this.power;
+	
+		m.setLife(c); 
+		if(m.getLife()<0){
+			System.out.println("� muartu u mostro,z�");
+		}
+	}
+
+	public void attacked(Monster m){
+		int c;
+		c=m.getPowerAttack();
+	
+		this.setLife(this.life-c);
+		if(this.life<=0)
+			System.out.println("SEI MORTO! BUAUHAUHAUAUAHUAHUAHAU ");
+	}
+
+	public void collect(Collectibles c){
+		if(c instanceof LifePotion){
+			this.life+=c.getValue();
+		}
+		
+		else{
+			this.score+=c.getValue();
+			if(c instanceof Key){
+			Type t= Key.getType();
+			switch(t){
+				case JUMP : 
+					{
+						this.setKeyJump(true);
+						System.out.println( "It's a JUMP" );
+						
+						break;
+					}
+				case RUN :
+					{
+						this.setKeyRun(true);
+						System.out.println( "It's a RUN" );
+						
+						break;
+						}
+				case SHOOT :
+					{
+						this.setKeyShoot(true);
+						System.out.println( "It's a SHOOT" );
+						
+						break;
+					}
+			}
+			
+		}//end if Key
+		
+		if(c instanceof Chest){
+				Type t= Chest.getType();
+				switch(t){
+					case JUMP : 
+						{
+							if(this.getKeyJump()==true){
+						
+							this.setJump(true);
+							System.out.println( "It's a CHEST OF JUMP" );
+							}
+							break;
+						}
+					case RUN :
+						{
+							if(this.getKeyRun()==true){
+						
+							this.setRun(true);
+							System.out.println( "It's a CHEST OF RUN" );
+							}
+							break;
+							}
+					case SHOOT :
+						{
+							if(this.getKeyShoot()==true){
+						
+							this.setShoot(true);
+							System.out.println( "It's a CHEST OF SHOOT" );
+							}
+							break;
+						}
+				}
+			
+		}
+
+
+}
+		
+	}
+
+	 public void setMonsters(final Collection<Monster> monsters)
+	    {
+	        this.monsters = monsters;
+	    }
+
+}

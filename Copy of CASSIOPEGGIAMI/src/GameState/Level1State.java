@@ -3,6 +3,7 @@ package GameState;
 import Main.GamePanel;
 import TileMap.*;
 import Entity.*;
+import Entity.Enemies.PesciolinoCattivo;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -14,7 +15,7 @@ public class Level1State extends GameState {
 	private Background bg;
 	
 	private Cassiopea cassiopea;
-	
+	private ArrayList<Nemico> nemici;
 
 	
 	
@@ -36,10 +37,32 @@ public class Level1State extends GameState {
 		cassiopea = new Cassiopea(mattonciniMap);
 		cassiopea.setPosition(100, 100);
 		
-		
+		popoliamoNemici();
 
 		
 	}
+	
+	
+private void popoliamoNemici() {
+		
+		nemici = new ArrayList<Nemico>();
+		
+		PesciolinoCattivo s;
+		Point[] points = new Point[] {
+			new Point(200, 100),
+			new Point(860, 200),
+			new Point(1525, 300),
+			new Point(1680, 300),
+			new Point(1800, 300)
+		};
+		for(int i = 0; i < points.length; i++) {
+			s = new PesciolinoCattivo(mattonciniMap);
+			s.setPosition(points[i].x, points[i].y);
+			nemici.add(s);
+		}
+		
+	}
+	
 	
 	public void update() {
 		
@@ -55,6 +78,10 @@ public class Level1State extends GameState {
 		
 		// set background
 		bg.setPosition(mattonciniMap.getx(), mattonciniMap.gety());
+		
+		for(int i = 0; i < nemici.size(); i++) {
+			Nemico e = nemici.get(i);
+			e.update();}
 			
 	}
 	
@@ -69,7 +96,9 @@ public class Level1State extends GameState {
 		// draw cassy
 		cassiopea.draw(g);
 		
-
+		for(int i = 0; i < nemici.size(); i++) {
+			nemici.get(i).draw(g);
+		}
 		
 	}
 	

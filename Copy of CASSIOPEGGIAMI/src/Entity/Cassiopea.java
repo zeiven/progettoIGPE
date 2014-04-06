@@ -59,13 +59,13 @@ public class Cassiopea extends MapObject {
 			
 			BufferedImage spritesheet = ImageIO.read(
 				getClass().getResourceAsStream(
-					"/Sprites/Player/cassiopea.jpg"
+					"/Sprites/Player/cassiopea2.gif"
 				)
 			);
 			
 			sprites = new ArrayList<BufferedImage[]>();
 			
-			for(int i = 0; i < 7; i++) {
+			for(int i = 0; i < 5; i++) {
 				
 				BufferedImage[] bi =
 					new BufferedImage[numFrames[i]];

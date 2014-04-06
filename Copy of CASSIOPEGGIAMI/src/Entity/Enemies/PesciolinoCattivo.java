@@ -79,10 +79,10 @@ public class PesciolinoCattivo extends Nemico {
 			}
 		}
 		
-		// falling
-		if(falling) {
-			dy += fallSpeed;
-		}
+		// VOLAREEEEEEEEEE
+//		if(falling) {
+//			dy += fallSpeed;
+//		}
 		
 	}
 	

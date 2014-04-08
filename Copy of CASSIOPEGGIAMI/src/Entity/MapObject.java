@@ -14,6 +14,7 @@ public abstract class MapObject {
 	protected mattonciniMap mattonMap;
 	protected int mattonSize;
 	protected double xmap;
+	int x1;
 	protected double ymap;
 	
 	// position and vector(quello di van bon)

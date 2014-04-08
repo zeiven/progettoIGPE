@@ -16,6 +16,13 @@ public class Cassiopea extends MapObject {
 	// VEDIAMO SE CASSYMINCHIA VOLA
 	private boolean gliding;
 	
+	
+	private boolean scratching;
+	private int scratchDamage;
+	private int scratchRange;
+	private boolean flinching;
+	private long flinchTimer;
+	
 //	// animations
 	private ArrayList<BufferedImage[]> sprites;
 	private final int[] numFrames = {
@@ -112,6 +119,68 @@ public class Cassiopea extends MapObject {
 	public int getMaxHealth() { return maxHealth; }
 	public void setGliding(boolean b) { 
 		gliding = b;
+	}
+	
+	public void checkAttack(ArrayList<Nemico> nemici) {
+		
+		// loop through enemies
+		for(int i = 0; i < nemici.size(); i++) {
+			
+			Nemico e = nemici.get(i);
+			
+			// scratch attack
+			if(scratching) {
+				if(facingRight) {
+					if(
+						e.getx() > x &&
+						e.getx() < x + scratchRange && 
+						e.gety() > y - height / 2 &&
+						e.gety() < y + height / 2
+					) {
+						e.hit(scratchDamage);
+					}
+				}
+				else {
+					if(
+						e.getx() < x &&
+						e.getx() > x - scratchRange &&
+						e.gety() > y - height / 2 &&
+						e.gety() < y + height / 2
+					) {
+						e.hit(scratchDamage);
+					}
+				}
+			}
+	
+			
+//			// fireballs
+//			for(int j = 0; j < fireBalls.size(); j++) {
+//				if(fireBalls.get(j).intersects(e)) {
+//					e.hit(fireBallDamage);
+//					fireBalls.get(j).setHit();
+//					break;
+//				}
+//			}
+			
+			// check enemy collision
+			if(!(e instanceof Fitoplancton)){
+			if(intersects(e)) {
+				hit(e.getDamage());}
+			}
+			
+		}
+		
+	}
+	
+	
+	public void hit(int damage) {
+
+		if(flinching) return;
+		health -= damage;
+		if(health < 0) health = 0;
+//		if(health == 0) dead = true;
+		flinching = true;
+		flinchTimer = System.nanoTime();
 	}
 	
 	private void getNextPosition() {
@@ -222,13 +291,25 @@ public class Cassiopea extends MapObject {
 			if(right) facingRight = true;
 			if(left) facingRight = false;
 		}
-		
+		if(flinching) {
+			long elapsed =
+				(System.nanoTime() - flinchTimer) / 1000000;
+			if(elapsed > 1000) {
+				flinching = false;
+			}
+		}
 	}
 	
 	public void draw(Graphics2D g) {
 		
 		setMapPosition();
-
+		if(flinching) {
+			long elapsed =
+				(System.nanoTime() - flinchTimer) / 1000000;
+			if(elapsed / 100 % 2 == 0) {
+				return;
+			}
+		}
 		
 		super.draw(g);
 		

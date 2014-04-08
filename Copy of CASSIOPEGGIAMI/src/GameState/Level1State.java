@@ -111,7 +111,7 @@ private void popoliamoNemici() {
 		for(int i = 0; i < nemici.size(); i++) {
 			Nemico e = nemici.get(i);
 			e.update();}
-			
+cassiopea.checkAttack(nemici);	
 	}
 	
 	public void draw(Graphics2D g) {

@@ -1,8 +1,4 @@
 /Entity
-/Sprites
 /GameState
-/Maps
-/Tilesets
-/BarraVita
-/Punti.class
-/Punti
+/Main
+/TileMap

@@ -70,6 +70,23 @@ public abstract class MapObject {
 		mattonMap = tm;
 		mattonSize = tm.getmattonciniSize(); 
 	}
+	
+	public boolean intersects(MapObject o) {
+		Rectangle r1 = getRectangle();
+		Rectangle r2 = o.getRectangle();
+		return r1.intersects(r2);
+	}
+	
+	public Rectangle getRectangle() {
+		return new Rectangle(
+				(int)x - cwidth,
+				(int)y - cheight,
+				cwidth,
+				cheight
+		);
+	}
+
+	
 	public void calculateCorners(double x, double y) {
 		
 		int leftmattoncini = (int)(x - cwidth / 2) / mattonSize;
@@ -206,19 +223,3 @@ public abstract class MapObject {
 	}
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

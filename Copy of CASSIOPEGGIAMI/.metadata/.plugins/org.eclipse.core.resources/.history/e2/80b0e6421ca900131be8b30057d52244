@@ -1,0 +1,150 @@
+package logica;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+
+public class GameManager
+{
+
+    private Cassiopea cassiopea = null;
+
+    private Collection<Monster> monsters = null;
+
+    /**
+     * @uml.property  name="world"
+     * @uml.associationEnd  multiplicity="(1 1)" aggregation="shared" inverse="gameManager:it.unical.mat.igpe.pacman.World"
+     */
+    private World world = null;
+
+    /**
+     * @uml.property  name="worldManager"
+     * @uml.associationEnd  multiplicity="(1 1)" inverse="gameManager:it.unical.mat.igpe.pacman.WorldManager"
+     */
+    private WorldManager worldManager = new WorldManager();
+
+    public Cassiopea getCassiopea()
+    {
+        return cassiopea;
+    }
+
+    public Collection<Monster> getMonsters()
+    {
+        return Collections.unmodifiableCollection(monsters);
+    }
+
+    /**
+     * Getter of the property <tt>world</tt>
+     * @return  Returns the world.
+     * @uml.property  name="world"
+     */
+    public World getWorld()
+    {
+        return world;
+    }
+
+    /**
+     * Getter of the property <tt>worldManager</tt>
+     * @return  Returns the worldManager.
+     * @uml.property  name="worldManager"
+     */
+    public WorldManager getWorldManager()
+    {
+        return worldManager;
+    }
+
+    /**
+     */
+    public boolean isGameOver()
+    {
+        return cassiopea.getLives() <= 0;
+    }
+
+    /**
+     */
+    public boolean isLevelOver()
+    {
+        return !world.areThereCollectables();
+    }
+
+    /**
+     * Setter of the property <tt>world</tt>
+     * @param world  The world to set.
+     * @uml.property  name="world"
+     */
+    public void setWorld(final WorldImplem world)
+    {
+        this.world = world;
+    }
+
+    /**
+     * Setter of the property <tt>worldManager</tt>
+     * @param worldManager  The worldManager to set.
+     * @uml.property  name="worldManager"
+     */
+    public void setWorldManager(final WorldManager worldManager)
+    {
+        this.worldManager = worldManager;
+    }
+
+    /**
+     * @param ai 
+     * @throws IOException 
+     */
+    public void start(final MonsterAI ai) throws IOException
+    {
+        cassiopea = new Cassiopea(1, 10);
+        worldManager.reset();
+        try
+        {
+            world = worldManager.getNextWorld(cassiopea);
+        }
+        catch (final IOException e)
+        {
+        	cassiopea = null;
+            worldManager.reset();
+            throw e;
+        }
+        
+        monsters = new ArrayList<Monster>();
+        monsters.add(new FlyingMonster(9,3,world,15,10,5,cassiopea,3));
+        monsters.add(new JumpingMonster(5,9,world,25,11,7,cassiopea,6));
+        
+       cassiopea.setMonsters(monsters);
+       cassiopea.setWorld(world);
+    }
+
+    /**
+     */
+    public void update()
+    {
+        if (cassiopea.isDead())
+        {
+            cassiopea.reset();
+            for (final Monster monster : monsters)
+            {
+                monster.reset();
+            }
+        }
+        else
+        {
+            cassiopea.update();
+        }
+        
+        /*for (final Monster monster : monsters)
+        {
+            if (cassiopea.isDead())
+            {
+            	cassiopea.reset();
+            }
+            else
+            {
+            	cassiopea.update();
+            }
+        }*/
+        world.update();
+    }
+
+}
+

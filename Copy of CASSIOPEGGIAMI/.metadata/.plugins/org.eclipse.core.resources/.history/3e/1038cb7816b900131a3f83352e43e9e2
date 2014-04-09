@@ -1,0 +1,40 @@
+package logica;
+
+
+public class AbstractStaticObject implements StaticObject
+{
+    private double x;
+
+    private double y;
+ 
+    
+    public AbstractStaticObject(final double x, final int y)
+    {
+        this.x = x;
+        this.y = y;
+    }
+
+    @Override
+    public final double getX()
+    {
+        return x;
+    }
+
+    @Override
+    public final double getY()
+    {
+        return y;
+
+    }
+
+    protected final void setX(final int x)
+    {
+        this.x = x;
+    }
+
+    protected final void setY(final int y)
+    {
+        this.y = y;
+        
+    }
+}

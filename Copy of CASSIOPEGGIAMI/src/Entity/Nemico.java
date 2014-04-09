@@ -32,6 +32,16 @@ public class Nemico extends MapObject {
 	}
 	
 	public void update() {}
+
+	public void setContaCibo() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public int getContaCibo() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 	
 }
 

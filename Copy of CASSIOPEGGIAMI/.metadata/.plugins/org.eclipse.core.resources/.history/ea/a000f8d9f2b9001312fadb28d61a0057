@@ -1,0 +1,240 @@
+package Entity;
+
+import Main.GamePanel;
+
+
+import TileMap.Mattoncini;
+import TileMap.mattonciniMap;
+
+import java.awt.Rectangle;
+
+public abstract class MapObject {
+	
+	// mattoncini stuff
+	protected mattonciniMap mattonMap;
+	protected int mattonSize;
+	protected double xmap;
+	protected double ymap;
+	
+	// position and vector(quello di van bon)
+	protected double x;
+	protected double y;
+	protected double dx;
+	protected double dy;
+	
+	// dimensions
+	protected int width;
+	protected int height;
+	
+	// collision box
+	protected int cwidth;
+	protected int cheight;
+	
+	// collision
+	protected int currRow;
+	protected int currCol;
+	protected double xdest;
+	protected double ydest;
+	protected double xtemp;
+	protected double ytemp;
+	protected boolean topLeft;
+	protected boolean topRight;
+	protected boolean bottomLeft;
+	protected boolean bottomRight;
+	
+	// animation
+	protected Animation animation;
+	protected int currentAction;
+	protected int previousAction;
+	protected boolean facingRight;
+	
+	// movement
+	protected boolean left;
+	protected boolean right;
+	protected boolean up;
+	protected boolean down;
+	protected boolean jumping;
+	protected boolean falling;
+	
+	// movement attributes
+	protected double moveSpeed;
+	protected double maxSpeed;
+	protected double stopSpeed;
+	protected double fallSpeed;
+	protected double maxFallSpeed;
+	protected double jumpStart;
+	protected double stopJumpSpeed;
+	
+	// constructor
+	public MapObject(mattonciniMap tm) {
+		mattonMap = tm;
+		mattonSize = tm.getmattonciniSize(); 
+	}
+	
+//	public boolean intersects(MapObject o) {
+//		Rectangle r1 = getRectangle();
+//		Rectangle r2 = o.getRectangle();
+//		return r1.intersects(r2);
+//	}
+	
+//	public Rectangle getRectangle() {
+//		return new Rectangle(
+//				(int)x - cwidth,
+//				(int)y - cheight,
+//				cwidth,
+//				cheight
+//		);
+//	}
+	
+	public void calculateCorners(double x, double y) {
+		
+		int leftmattoncini = (int)(x - cwidth / 2) / mattonSize;
+		int rightmattoncini = (int)(x + cwidth / 2 - 1) / mattonSize;
+		int topmattoncini = (int)(y - cheight / 2) / mattonSize;
+		int bottommattoncini = (int)(y + cheight / 2 - 1) / mattonSize;
+		
+		int tl = mattonMap.getType(topmattoncini, leftmattoncini);
+		int tr = mattonMap.getType(topmattoncini, rightmattoncini);
+		int bl = mattonMap.getType(bottommattoncini, leftmattoncini);
+		int br = mattonMap.getType(bottommattoncini, rightmattoncini);
+		
+		topLeft = tl == Mattoncini.BLOCKED;
+		topRight = tr == Mattoncini.BLOCKED;
+		bottomLeft = bl == Mattoncini.BLOCKED;
+		bottomRight = br == Mattoncini.BLOCKED;
+		
+	}
+	
+	public void checkmattonciniMapCollision() {
+		
+		currCol = (int)x / mattonSize;
+		currRow = (int)y / mattonSize;
+		
+		xdest = x + dx;
+		ydest = y + dy;
+		
+		xtemp = x;
+		ytemp = y;
+		
+		calculateCorners(x, ydest);
+		if(dy < 0) {
+			if(topLeft || topRight) {
+				dy = 0;
+				ytemp = currRow * mattonSize + cheight / 2;
+			}
+			else {
+				ytemp += dy;
+			}
+		}
+		if(dy > 0) {
+			if(bottomLeft || bottomRight) {
+				dy = 0;
+				falling = false;
+				ytemp = (currRow + 1) * mattonSize - cheight / 2;
+			}
+			else {
+				ytemp += dy;
+			}
+		}
+		
+		calculateCorners(xdest, y);
+		if(dx < 0) {
+			if(topLeft || bottomLeft) {
+				dx = 0;
+				xtemp = currCol * mattonSize + cwidth / 2;
+			}
+			else {
+				xtemp += dx;
+			}
+		}
+		if(dx > 0) {
+			if(topRight || bottomRight) {
+				dx = 0;
+				xtemp = (currCol + 1) * mattonSize - cwidth / 2;
+			}
+			else {
+				xtemp += dx;
+			}
+		}
+		
+		if(!falling) {
+			calculateCorners(x, ydest + 1);
+			if(!bottomLeft && !bottomRight) {
+				falling = true;
+			}
+		}
+		
+	}
+	
+	public int getx() { return (int)x; }
+	public int gety() { return (int)y; }
+	public int getWidth() { return width; }
+	public int getHeight() { return height; }
+	public int getCWidth() { return cwidth; }
+	public int getCHeight() { return cheight; }
+	
+	public void setPosition(double x, double y) {
+		this.x = x;
+		this.y = y;
+	}
+	public void setVector(double dx, double dy) {
+		this.dx = dx;
+		this.dy = dy;
+	}
+	
+	public void setMapPosition() {
+		xmap = mattonMap.getx();
+		ymap = mattonMap.gety();
+	}
+	
+	public void setLeft(boolean b) { left = b; }
+	public void setRight(boolean b) { right = b; }
+	public void setUp(boolean b) { up = b; }
+	public void setDown(boolean b) { down = b; }
+	public void setJumping(boolean b) { jumping = b; }
+	
+	public boolean notOnScreen() {
+		return x + xmap + width < 0 ||
+			x + xmap - width > GamePanel.WIDTH ||
+			y + ymap + height < 0 ||
+			y + ymap - height > GamePanel.HEIGHT;
+	}
+	
+	public void draw(java.awt.Graphics2D g) {
+		if(facingRight) {
+			g.drawImage(
+				animation.getImage(),
+				(int)(x + xmap - width / 2),
+				(int)(y + ymap - height / 2),
+				null
+			);
+		}
+		else {
+			g.drawImage(
+				animation.getImage(),
+				(int)(x + xmap - width / 2 + width),
+				(int)(y + ymap - height / 2),
+				-width,
+				height,
+				null
+			);
+		}
+	}
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

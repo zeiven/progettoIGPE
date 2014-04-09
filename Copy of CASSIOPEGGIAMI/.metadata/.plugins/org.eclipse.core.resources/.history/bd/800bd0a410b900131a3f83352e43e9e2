@@ -1,0 +1,544 @@
+package Grafica;
+
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.image.RenderedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Observer;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.plaf.basic.BasicProgressBarUI;
+
+import logica.Cassiopea;
+import logica.Character;
+import logica.Chest;
+import logica.Empty;
+import logica.EnvironmentElevator;
+import logica.EnvironmentGround;
+import logica.EnvironmentStairway;
+import logica.GameManager;
+import logica.Key;
+import logica.Life;
+import logica.Money;
+import logica.Monster;
+import logica.StaticObject;
+import logica.World;
+
+
+public class GamePanel extends JPanel
+{
+	public static boolean runningDX=false;
+	public static boolean runningSX=false;
+	public static boolean runningUP=false;
+	public static boolean runningDW=false;
+	
+	/**
+	 * 
+	 */
+
+	public static Image imag=null;
+	private static final long serialVersionUID = 1L;
+
+	private final class RepainterThread extends Thread
+	{
+		private final GameManager gameManager;
+		private GamePanel gamePanel;
+
+		private RepainterThread(final GameManager gameManager, GamePanel gamePanel)
+		{
+			super("Repainter");
+
+
+			this.gameManager = gameManager;
+			this.gamePanel = gamePanel;
+		}
+
+
+		@Override
+		public void run()
+		{
+			int switchImages = 0;
+			//            
+
+			while (true )
+			{
+				//            	System.out.println("STO CAZZO "+cassiopea.getX()+" "+cassiopea.getY());
+				//      gameManager.update();
+
+
+				//                if (gameManager.isGameOver() || gameManager.isLevelOver())
+				//                {
+				//                    running = false;
+				//                    continue;
+				//                }
+//				running=false;
+		
+
+				int direction = gameManager.getCassiopea().getDirection();
+				//                switch(direction){
+				//                case Character.DOWN
+
+				switch (direction)
+				{
+				case Character.UP:
+					dXCassiopea = TILE_SIZE;
+					dYCassiopea = 0;
+					break;
+				case Character.DOWN:
+					dXCassiopea = -TILE_SIZE;
+					dYCassiopea = 0;
+					break;
+				case Character.DOWN1:
+					dXCassiopea = -TILE_SIZE;
+					dYCassiopea = 0;
+					break;
+				case Character.LEFT:
+					dYCassiopea = TILE_SIZE;
+					dXCassiopea = 0;
+					break;
+				case Character.RIGHT:
+					dYCassiopea = -TILE_SIZE;
+					dXCassiopea = 0;
+					break;
+				case Character.DOPPIOSALTODX:
+					dYCassiopea = TILE_SIZE;
+					dXCassiopea = -TILE_SIZE;
+					break;
+				case Character.DOPPIOSALTOSX:
+					dYCassiopea = TILE_SIZE;
+					dXCassiopea = -TILE_SIZE;
+					break;
+				}
+				//                for (int i = 0; i < ANIMATION_STEPS; i++)
+				//                {
+				//                    if (switchImages == 3)
+				//                    {
+				//                    	cassiopeaImage = imageProvider.Cassiopea();
+				//                        switchImages = 0;
+				//                        
+				//                    }
+				//                    else
+				//                    {
+				//                    	cassiopeaImage = imageProvider.getCassiopeaDirection(direction);
+				//                        switchImages++;
+				//                    }
+				switch (direction)
+				{
+				case Character.UP:{
+					dXCassiopea -= TILE_SIZE / ANIMATION_STEPS;
+
+					break;
+				}
+				case Character.DOWN:{
+					dXCassiopea += TILE_SIZE / ANIMATION_STEPS;
+
+					break;}
+				case Character.DOWN1:{
+					dXCassiopea += TILE_SIZE / ANIMATION_STEPS;
+
+					break;}
+				case Character.LEFT:{
+					dYCassiopea -= TILE_SIZE / ANIMATION_STEPS;
+					break;}
+				case Character.RIGHT:{
+					dYCassiopea += TILE_SIZE / ANIMATION_STEPS;
+					break;}
+				case Character.DOPPIOSALTODX:{
+					dYCassiopea += TILE_SIZE / ANIMATION_STEPS;
+					break;}
+				case Character.DOPPIOSALTOSX:{
+					dYCassiopea += TILE_SIZE / ANIMATION_STEPS;
+					break;}
+				//                    }
+
+
+				
+				}  
+				try
+				{
+					Thread.sleep(500);
+				}
+				catch (final InterruptedException e)
+				{
+					//do nothing
+				}
+
+				gameManager.update();
+				gamePanel.repaint();
+			}
+
+			//            if (gameManager.isGameOver())
+			//            {
+			//                mainFrame.handleGameOver();
+			//            }
+			//            if (gameManager.isLevelOver())
+			//            {
+			//                mainFrame.handleLevelOver();
+			//            }
+		}
+	}
+
+	private static final int ANIMATION_STEPS = 5;
+
+	static final int PILL_OFFSET;
+
+	static final int PILL_SIZE = 10;
+
+	static final int SUPERPILL_OFFSET;
+
+	static final int SUPERPILL_SIZE = 24;
+
+	static final int TILE_SIZE = 50;
+
+	static
+	{
+		PILL_OFFSET = (TILE_SIZE - PILL_SIZE) / 2;
+		SUPERPILL_OFFSET = (TILE_SIZE - SUPERPILL_SIZE) / 2;
+	}
+
+	private int dXCassiopea;
+
+	private int dYCassiopea;
+	private boolean nonPremuto;
+	private final GameManager gameManager;
+
+	private final ImageProvider imageProvider;
+
+	private final MainFrame mainFrame;
+
+	private Image cassiopeaImage;
+
+	private final Collection<Monster> monsters;
+
+	private final RepainterThread repainterThread;
+
+	private  boolean running = true;
+
+	int offset;
+
+	final Cassiopea cassiopea;
+
+	final int vOffset = 100;
+
+	public GamePanel(final GameManager gameManager, final MainFrame mainFrame)
+	{
+		repainterThread = new RepainterThread(gameManager,this);
+		repainterThread.start();
+		this.gameManager = gameManager;
+		this.mainFrame = mainFrame;
+		cassiopea = gameManager.getCassiopea();
+		monsters = gameManager.getMonsters();
+		imageProvider = new ImageProvider();
+		addKeyListener(new KeyAdapter()
+		{
+			@Override
+			public void keyPressed(final KeyEvent e)
+			{System.out.println(e.getKeyCode());
+
+			switch (e.getKeyCode())
+			{
+
+			case KeyEvent.VK_W:{
+
+//				runningUP=true;
+//				runningDW=false;
+//				runningSX=false;
+//				runningDX=false;
+				cassiopea.setUp(true);
+				break;}
+			case KeyEvent.VK_A:{
+
+//				runningSX=true;
+//				runningDW=false;
+//				runningUP=false;
+//				runningDX=false;
+				cassiopea.setLeft(true);
+				break;}
+			case KeyEvent.VK_D:{
+
+//				runningDX=true;
+//				runningDW=false;
+//				runningSX=false;
+//				runningUP=false;
+				cassiopea.setDirection(Character.RIGHT);
+				break;}
+//			case KeyEvent.VK_S:{
+//
+//				runningDW=true;
+//				runningUP=false;
+//				runningSX=false;
+//				runningDX=false;
+//				cassiopea.setDirection(Character.DOWN);
+//				break;}
+//			case KeyEvent.VK_F:{
+//				cassiopea.setDirection(Character.DOPPIOSALTODX);
+////				running=true;
+//				break;
+//			}
+//			case KeyEvent.VK_Z:{
+//				cassiopea.setDirection(Character.DOPPIOSALTOSX);
+//				running=true;
+//				break;
+//			}
+			}
+			//                            
+			gameManager.update();
+			//               
+			//                                        repaint();
+			}
+		});
+		addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				// TODO Auto-generated method stub
+				switch (e.getKeyCode())
+				{
+
+				case KeyEvent.VK_W:{
+					
+					runningUP=false;
+					cassiopea.setDirection(Character.STOP);
+//					runningDW=true;
+//					cassiopea.setDirection(Character.DOWN);
+					
+				
+					//                        gameManager.update();
+					//                        repaint();
+					break;}
+//				case KeyEvent.VK_A:{
+////					cassiopea.setDirection(Character.STOP);
+//					runningSX=false;
+//					cassiopea.setDirection(Character.STOP);
+//					break;}
+				case KeyEvent.VK_D:{
+//					                    	cassiopea.setDirection(Character.STOP);
+//					runningDX=false;
+					cassiopea.setDirection(Character.STOP);
+					break;}
+//				case KeyEvent.VK_S:{
+////					cassiopea.setDirection(Character.DOWN);
+//					runningDW=false;
+//					cassiopea.setDirection(Character.STOP);
+//					//                    	gameManager.update();
+//					//                        repaint();
+//					break;}
+//				case KeyEvent.VK_F:{
+//					cassiopea.setDirection(Character.DiscescaDoppioSaltoDX);
+//					running=false;
+//					//                    	gameManager.update();
+//					break;
+//				}
+//				case KeyEvent.VK_Z:{
+//					cassiopea.setDirection(Character.DiscescaDoppioSaltoSX);
+//					running=false;
+//					//                    	gameManager.update();
+//					//                        repaint();
+//					break;}
+				}
+				//                        
+				//            gameManager.update();
+				//            repaint();
+//				cassiopea.setDirection(Character.STOP);
+//				dXCassiopea=0;
+//				dYCassiopea=0;
+			}
+
+		});
+		//        addMouseListener(new ScreenClickMouseAdapterExtension(gameManager));
+		//        addMouseListener(new VirtualKeysMouseAdapterExtension(gameManager));
+		//        addMouseListener(new DragMouseAdapterExtension(gameManager));
+		//        addMouseMotionListener(new MouseMotionAdapterExtension());
+
+	}
+
+	private void paintWorld(final Graphics g, final World currentWorld)
+	{
+
+
+		g.drawImage(imageProvider.Sfondo(),0,0,this);
+		g.drawImage(imageProvider.Life(),2,2,this);
+		g.drawString(""+cassiopea.getLife(), 20, 20);
+		g.drawImage(imageProvider.Money(), 1 * TILE_SIZE, 0 * TILE_SIZE, this);
+		g.drawString(""+cassiopea.getScore(), 80, 20);
+		
+        UIManager.put("ProgressBar.background", new Color(29,29,29));
+        UIManager.put("ProgressBar.foreground", new Color(16,95,173));
+        UIManager.put("ProgressBar.selectionBackground",new Color(214,214,214));
+        UIManager.put("ProgressBar.selectionForeground",new Color(29,29,29));
+ 
+        final JProgressBar jp = new JProgressBar();
+        jp.setUI(new BasicProgressBarUI());
+        jp.setBounds(94, 24 ,434, 25);
+        jp.setMinimum(0);
+        jp.setMaximum(100);
+        //if(cassiopea.getScore()>=10){
+        jp.setValue(33);
+        	
+//        }
+        if(jp.getValue() <= 100*.33){
+        
+		     jp.setForeground(Color.RED);}
+		else if(jp.getValue() <= 100*.66)
+		     jp.setForeground(Color.YELLOW);
+		else jp.setForeground(Color.GREEN);
+        jp.setStringPainted(true);
+        jp.setBorder(null);
+        add(jp);
+		
+		for (int x = 0; x < currentWorld.getHeight(); x++)
+		{
+			for (int y = 0; y < currentWorld.getWidth(); y++)
+			{
+				final StaticObject cell = currentWorld.getCell(x, y);
+				//                if (cell instanceof EnvironmentGround || cell instanceof EnvironmentElevator || cell instanceof EnvironmentStairway)
+				//                {
+				//                    //g.setColor(Color.ORANGE);
+				//                	g.drawImage(imageProvider.FlyingM(), x * TILE_SIZE, y * TILE_SIZE, this);
+				//                    g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+				//                }
+
+				if (cell instanceof Money)
+				{
+					//                	g.setColor(Color.YELLOW);
+					g.drawImage(imageProvider.Money(), y * TILE_SIZE, x * TILE_SIZE, this);
+					//g.fillOval(x * TILE_SIZE + SUPERPILL_OFFSET, y * TILE_SIZE + SUPERPILL_OFFSET, SUPERPILL_SIZE, SUPERPILL_SIZE);
+				}
+				else if(cell instanceof Monster)
+				{
+					g.drawImage(imageProvider.FlyingM(), y * TILE_SIZE, x * TILE_SIZE, this);
+
+					//g.fillOval(x * TILE_SIZE + SUPERPILL_OFFSET, y * TILE_SIZE + SUPERPILL_OFFSET, SUPERPILL_SIZE, SUPERPILL_SIZE);
+				}
+				else if (cell instanceof Key)
+				{
+					g.setColor(Color.orange);
+
+					//                    g.drawImage(imageProvider.Key(), x * TILE_SIZE, y * TILE_SIZE, this);
+					g.fillOval(y * TILE_SIZE + PILL_OFFSET, x * TILE_SIZE + SUPERPILL_OFFSET, SUPERPILL_SIZE, SUPERPILL_SIZE);
+				}
+				else if (cell instanceof Chest)
+				{
+					// g.setColor(Color.blue);
+
+					g.drawImage(imageProvider.Chest(),y * TILE_SIZE + PILL_OFFSET, x * TILE_SIZE,this);
+
+					//                    g.fillOval(x * TILE_SIZE + PILL_OFFSET, y * TILE_SIZE + SUPERPILL_OFFSET, SUPERPILL_SIZE, SUPERPILL_SIZE);
+				}
+				else if (cell instanceof EnvironmentGround)
+				{
+					//g.setColor(Color.white);
+					g.drawImage(imageProvider.EnvironmentGround(), y * TILE_SIZE, x * TILE_SIZE, this);
+					//                    g.fillRect(x * TILE_SIZE + PILL_OFFSET, y * TILE_SIZE + PILL_OFFSET, PILL_SIZE, PILL_SIZE);
+				}
+				else if (cell instanceof EnvironmentStairway)
+				{
+					//g.setColor(Color.darkGray);
+					g.drawImage(imageProvider.EnvironmentStairway(), y * TILE_SIZE, x * TILE_SIZE, this);
+					//                    g.fillRect(x * TILE_SIZE + PILL_OFFSET, y * TILE_SIZE + PILL_OFFSET, PILL_SIZE, PILL_SIZE);
+				}
+
+				else if (cell instanceof EnvironmentElevator)
+				{
+					//                    g.setColor(Color.pink);
+					g.drawImage(imageProvider.EnvironmentElevator(), y * TILE_SIZE, x * TILE_SIZE, this);
+					//                    g.fillOval(y * TILE_SIZE + PILL_OFFSET, x * TILE_SIZE + PILL_OFFSET, PILL_SIZE, PILL_SIZE);
+				}
+
+				else if (cell instanceof Life)
+				{
+					//                   g.setColor(Color.red);
+
+					g.drawImage(imageProvider.Life(), y * TILE_SIZE, x * TILE_SIZE, this);        
+					//                    g.fillOval(y * TILE_SIZE + PILL_OFFSET, x * TILE_SIZE + SUPERPILL_OFFSET, SUPERPILL_SIZE, SUPERPILL_SIZE);
+				}
+
+				
+				//
+//		
+//				        
+			}
+		}
+		g.drawImage(imageProvider.Cassiopea(), cassiopea.getY() * TILE_SIZE + dYCassiopea, cassiopea.getX() * TILE_SIZE + dXCassiopea, this);
+	}
+
+	@Override
+	protected void paintComponent(final Graphics g)
+	{
+
+	
+				g.fillRect(0, 0, getWidth(), getHeight());
+
+
+		final World currentWorld = gameManager.getWorld();
+
+		final double hScale = getWidth() / (double) (currentWorld.getWidth() * TILE_SIZE);
+		final double vScale = getHeight() / (double) (currentWorld.getHeight() * TILE_SIZE);
+		final double scale = Math.min(hScale, vScale);
+
+		offset = (int) (currentWorld.getWidth() * TILE_SIZE * scale) + 100;
+
+
+		//        JPanel p2= new JPanel();
+		//        add(p2);
+		//        JProgressBar pbar= new JProgressBar(SwingConstants.HORIZONTAL, 1, 100);
+		//        p2.add(pbar);
+		//        double maxHealth=10;
+		//		if(pbar.getValue() <= maxHealth*.33)
+		//        		     pbar.setForeground(Color.RED);
+		//        		else if(pbar.getValue() <= maxHealth*.66)
+		//        		     pbar.setForeground(Color.YELLOW);
+		//        		else pbar.setForeground(Color.GREEN);
+		//        System.out.println("dimensioni scale"+scale);
+		AffineTransform at = AffineTransform.getScaleInstance(hScale*2.1, vScale);
+		((Graphics2D) g).drawRenderedImage((RenderedImage) imag,at);
+		//        g.drawImage(imag, 0,0,this);
+		((Graphics2D) g).scale(hScale, vScale);
+		g.setColor(Color.yellow); 
+
+
+		//g.drawImage(imag1,2,2,p1);
+		//g.drawImage(imageProvider.Money(), 1 * TILE_SIZE, 0 * TILE_SIZE, p1);
+
+		
+		paintWorld(g, currentWorld);
+		//      System.out.println("CASSIOPEA "+ cassiopea.getY() + " "+ cassiopea.getX());
+
+
+
+		/* for (final Monster monster : monsters)
+        {
+            if (monster.getLife()>=1)
+            {
+                g.drawImage(imageProvider.FlyingM(), monster.getX() * TILE_SIZE, monster.getY() * TILE_SIZE, this);
+
+            }
+            else
+            {
+                g.drawImage(imageProvider.JumpingM(), monster.getX() * TILE_SIZE, monster.getY() * TILE_SIZE,
+                        this);
+            }
+
+        }*/
+
+
+
+	}
+	
+	
+	
+}

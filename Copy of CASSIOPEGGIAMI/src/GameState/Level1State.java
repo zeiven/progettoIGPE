@@ -3,6 +3,7 @@ package GameState;
 import Main.GamePanel;
 import TileMap.*;
 import Entity.*;
+import Entity.Enemies.Onde;
 import Entity.Enemies.PesciolinoCattivo;
 import Entity.Enemies.Riccio;
 
@@ -89,7 +90,19 @@ private void popoliamoNemici() {
 			f.setPosition(points2[i].x, points2[i].y);
 			nemici.add(f);
 		}
-		
+		Onde o;
+		Point[] points3 = new Point[] {
+			new Point(565, 400),
+			new Point(540, 400),
+			new Point(525, 400),
+			new Point(500, 400),
+			new Point(580, 400)
+		};
+		for(int i = 0; i < points.length; i++) {
+			o = new Onde(mattonciniMap);
+			o.setPosition(points3[i].x, points3[i].y);
+			nemici.add(o);
+		}
 	}
 	
 	
@@ -150,6 +163,8 @@ cassiopea.checkAttack(nemici);
 		if(k == KeyEvent.VK_W) cassiopea.setJumping(false);
 		if(k == KeyEvent.VK_E) cassiopea.setGliding(false);
 	}
+	
+	
 	
 }
 

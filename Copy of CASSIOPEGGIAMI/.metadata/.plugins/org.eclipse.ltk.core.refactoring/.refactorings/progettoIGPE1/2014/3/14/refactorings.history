@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;AbstractCharacter.java&apos; to &apos;Copy of progettoIGPE1/src/logica&apos;&#x0A;- Original project: &apos;progettoIGPE1&apos;&#x0A;- Destination element: &apos;Copy of progettoIGPE1/src/logica&apos;&#x0A;- Original element: &apos;logica.AbstractCharacter.java&apos;" description="Copy compilation unit" destination="=Copy of progettoIGPE1/src&lt;logica" element1="/src&lt;logica{AbstractCharacter.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1396294520717" units="1" version="1.0"/>
+</session>

@@ -22,7 +22,7 @@ public class mattonciniMap {
 	
 	
 	// map
-	private int[][] map;
+	public int[][] map;
 	private int mattonciniSize;
 	private int numRows;
 	private int numCols;
@@ -39,6 +39,10 @@ public class mattonciniMap {
 	private int colOffset;
 	private int numRowsToDraw;
 	private int numColsToDraw;
+	
+	public mattonciniMap(){
+		
+	}
 	
 	public mattonciniMap(int mattonciniSize) {
 		this.mattonciniSize = mattonciniSize;
@@ -131,7 +135,9 @@ public class mattonciniMap {
 		return mattoncinis[r][c].getType();
 	}
 	
-	
+	public int[][] getMondo(){
+		return map;
+	}
 	
 	public void setPosition(double x, double y) {
 		
@@ -186,6 +192,7 @@ public class mattonciniMap {
 		}
 		
 	}
+
 	
 }
 

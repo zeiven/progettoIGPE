@@ -1,8 +1,12 @@
 package Entity;
 
+import Entity.Enemies.Onde;
 import TileMap.*;
+
 import java.util.ArrayList;
+
 import javax.imageio.ImageIO;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -10,7 +14,7 @@ import java.awt.image.BufferedImage;
 public class Cassiopea extends MapObject {
 	
 	//CASSY
-	private int health;
+	public int health;
 	private int maxHealth;
 	
 	// VEDIAMO SE CASSYMINCHIA VOLA
@@ -153,20 +157,42 @@ public class Cassiopea extends MapObject {
 			}
 	
 			
-//			// fireballs
-//			for(int j = 0; j < fireBalls.size(); j++) {
-//				if(fireBalls.get(j).intersects(e)) {
-//					e.hit(fireBallDamage);
-//					fireBalls.get(j).setHit();
-//					break;
-//				}
-//			}
+
 			
 			// check enemy collision
 			if(!(e instanceof Fitoplancton)){
 			if(intersects(e)) {
 				hit(e.getDamage());}
 			}
+			if(e instanceof Fitoplancton){
+				if(intersects(e)) {
+					e.setPosition(-1, -1);
+					e.setContaCibo();
+				}
+				if(e.getContaCibo()==10){
+					health++;
+					((Fitoplancton) e).ResetContaCibo();
+					}
+			}
+//			
+			if(e instanceof Onde){
+				if(intersects(e)) {
+					setPosition(100, 100);
+					System.out.println("intersezioni onde ");
+					
+				}
+			}
+			
+			if(health<=0){
+				setPosition(100, 100);
+				health=5;
+			}
+			
+//			if(e.getContaCibo()==1){
+//				health++;
+//				continue;
+//			}
+			
 			
 		}
 		

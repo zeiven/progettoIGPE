@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename method &apos;logica.AbstractCharacter.controlloGravità(...)&apos; to &apos;controlloGravita&apos;&#x0A;- Original project: &apos;progettoIGPE1&apos;&#x0A;- Original element: &apos;logica.AbstractCharacter.controlloGravità(...)&apos;&#x0A;- Renamed element: &apos;logica.AbstractCharacter.controlloGravita(...)&apos;&#x0A;- Update references to refactored element" delegate="false" deprecate="false" description="Rename method &apos;controlloGravità&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.method" input="/src&lt;logica{AbstractCharacter.java[AbstractCharacter~controlloGravità~I~I" name="controlloGravita" references="true" stamp="1394720054907" version="1.0"/>
+</session>

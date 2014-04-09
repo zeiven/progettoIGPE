@@ -1,0 +1,29 @@
+package logica;
+import Grafica.*;
+
+public interface World
+{
+
+    /**
+     */
+    public abstract boolean areThereCollectables();
+
+    /**
+     */
+    public abstract StaticObject getCell(double d, double y);
+
+    /**
+     */
+    public abstract int getHeight();
+
+    /**
+     */
+    public abstract int getWidth();
+
+    /**
+     */
+    public abstract void update();
+
+	
+
+}

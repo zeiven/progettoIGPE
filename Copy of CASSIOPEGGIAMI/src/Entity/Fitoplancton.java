@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 public class Fitoplancton extends Nemico {
 	
 	private BufferedImage[] sprites;
+	static int contaCibo;
 	
 	public Fitoplancton(mattonciniMap tm) {
 		
@@ -66,25 +67,6 @@ public class Fitoplancton extends Nemico {
 	
 	private void getNextPosition() {
 		
-//		// movement
-//		if(left) {
-//			dx -= moveSpeed;
-//			if(dx < -maxSpeed) {
-//				dx = -maxSpeed;
-//			}
-//		}
-//		else if(right) {
-//			dx += moveSpeed;
-//			if(dx > maxSpeed) {
-//				dx = maxSpeed;
-//			}
-//		}
-//		
-//		// VOLAREEEEEEEEEE
-//		if(falling) {
-//			dy += fallSpeed;
-//		}
-		
 	}
 	
 	public void update() {
@@ -94,28 +76,7 @@ public class Fitoplancton extends Nemico {
 		checkmattonciniMapCollision();
 		setPosition(xtemp, ytemp);
 		
-		//  indietreggiaare
-//		if(indietreggiare) {
-//			double elapsed =
-//				(System.nanoTime() - indietreggiareTimer) / 1000000;
-//			if(elapsed > 400) {
-//				indietreggiare = false;
-//			}
-//		}
-//		
-//		
-//		if(right && dx == 0) {
-//			right = false;
-//			left = true;
-//			facingRight = false;
-//		}
-//		else if(left && dx == 0) {
-//			right = true;
-//			left = false;
-//			facingRight = true;
-//		}
-//		
-//		// update animation
+		
 		animation.update();
 		
 	}
@@ -130,6 +91,17 @@ public class Fitoplancton extends Nemico {
 		
 	}
 	
+	public void setContaCibo(){
+		contaCibo++;
+	}
+	
+	public void ResetContaCibo(){
+		contaCibo=0;
+	}
+	
+	public int getContaCibo(){
+		return contaCibo;
+	}
 }
 
 

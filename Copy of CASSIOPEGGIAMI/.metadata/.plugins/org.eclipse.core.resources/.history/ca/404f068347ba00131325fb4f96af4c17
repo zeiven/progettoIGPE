@@ -1,0 +1,107 @@
+package GameState;
+
+import Main.GamePanel;
+import TileMap.*;
+import Entity.*;
+
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+
+public class Level1State extends GameState {
+	
+	private mattonciniMap mattonciniMap; // mattoncini map
+	private Background bg;
+	
+	private Cassiopea cassiopea;
+	
+
+	
+	
+	public Level1State(GameStateManager gsm) {
+		this.gsm = gsm;
+		init();
+	}
+	
+	public void init() {
+		
+		mattonciniMap = new mattonciniMap(30);
+		mattonciniMap.loadmattoncinis("/Tilesets/grasstileset.gif"); // è l'immagine intera di quello che creerà il mondo, mattoncini ecc ecc
+		mattonciniMap.loadMap("/Maps/level1-1.map"); //primo livello..fa na pocu schifu, però CAMINA !!
+		mattonciniMap.setPosition(0, 0);
+		
+		
+		bg = new Background("/Backgrounds/bollicine.jpg", 0.1);
+		
+		cassiopea = new Cassiopea(mattonciniMap);
+		cassiopea.setPosition(100, 100);
+		
+		
+
+		
+	}
+	
+	public void update() {
+		
+		// update cassy<3
+		cassiopea.update();
+		
+		//**********SETPOSITION SERVE A FARE "LA MATRICE A SCORRIMENTO" 
+
+		mattonciniMap.setPosition(
+			GamePanel.WIDTH / 2 - cassiopea.getx(),
+			GamePanel.HEIGHT / 2 - cassiopea.gety()
+		);
+		
+		// set background
+		bg.setPosition(mattonciniMap.getx(), mattonciniMap.gety());
+			
+	}
+	
+	public void draw(Graphics2D g) {
+		
+		// draw background
+		bg.draw(g);
+		
+		// draw 
+		mattonciniMap.draw(g);
+		
+		// draw cassy
+		cassiopea.draw(g);
+		
+
+		
+	}
+	
+	public void keyPressed(int k) {
+		if(k == KeyEvent.VK_LEFT) cassiopea.setLeft(true);
+		if(k == KeyEvent.VK_RIGHT) cassiopea.setRight(true);
+		if(k == KeyEvent.VK_UP) cassiopea.setUp(true);
+		if(k == KeyEvent.VK_DOWN) cassiopea.setDown(true);
+		if(k == KeyEvent.VK_W) cassiopea.setJumping(true);
+		if(k == KeyEvent.VK_E) cassiopea.setGliding(true);
+//		
+	}
+	
+	public void keyReleased(int k) {
+		if(k == KeyEvent.VK_LEFT) cassiopea.setLeft(false);
+		if(k == KeyEvent.VK_RIGHT) cassiopea.setRight(false);
+		if(k == KeyEvent.VK_UP) cassiopea.setUp(false);
+		if(k == KeyEvent.VK_DOWN) cassiopea.setDown(false);
+		if(k == KeyEvent.VK_W) cassiopea.setJumping(false);
+		if(k == KeyEvent.VK_E) cassiopea.setGliding(false);
+	}
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+

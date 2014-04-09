@@ -4,8 +4,10 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.event.*;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import Entity.Cassiopea;
 import GameState.GameStateManager;
 
 @SuppressWarnings("serial")
@@ -16,6 +18,7 @@ public class GamePanel extends JPanel
 	public static final int WIDTH = 468;
 	public static final int HEIGHT = 268;
 	public static final int SCALE = 2;
+	
 	
 	// game thread
 	private Thread thread;

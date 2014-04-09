@@ -1,0 +1,332 @@
+package logica;
+
+import javax.swing.RepaintManager;
+
+import Grafica.*;
+public abstract class AbstractCharacter extends AbstractStaticObject implements Character
+{
+	public abstract void ScalaLife();
+    private final int defaultX;
+
+    private final int defaultY;
+    private int direction;
+private WorldManager worldManager;
+    
+    protected boolean dead = false;
+    protected boolean left;
+	protected boolean right;
+	protected boolean up;
+	protected boolean down;
+	protected boolean jumping;
+	protected boolean falling;
+	
+    protected boolean walk = true;
+    protected boolean jump = false;
+    protected boolean run= false;
+    protected boolean shoot = false;
+    protected boolean KeyJump = false;
+    protected boolean KeyRun= false;
+    protected boolean KeyShoot = false;
+    protected boolean posizioneCambiata = false;
+    protected World world;
+
+    /**
+     */
+    protected AbstractCharacter( int defaultX, int defaultY, final World world)
+    {
+        super(defaultX, defaultY);
+        this.defaultX = defaultX;
+
+        this.defaultY = defaultY;
+        this.world = world;
+    }
+
+    public int getDirection()
+    {
+        return direction;
+    }
+
+    public boolean getCambiamento()
+    {
+        return posizioneCambiata;
+    }
+    
+    public void setCambiamento(boolean posizioneCambiata){
+    	this.posizioneCambiata=posizioneCambiata;
+    }
+    
+    public boolean isDead()
+    {
+        return dead;
+    }
+
+    @Override
+    public void reset()
+    {
+        setX(defaultX);
+        setY(defaultY);
+        dead = false;
+    }
+
+    @Override
+    public void setDirection( int direction)
+    {
+        this.direction = direction;
+        
+    }
+    public void setLeft(boolean b) { left = b; }
+	public void setRight(boolean b) { right = b; }
+	public void setUp(boolean b) { up = b; }
+	public void setDown(boolean b) { down = b; }
+	public void setJumping(boolean b) { jumping = b; }
+
+    @Override
+    public void update()
+    {
+         int y = getY();
+         int x = getX();
+//        setCambiamento(false);
+        
+//        	case DiscescaDoppioSaltoDX:
+//        		setY(y+2);
+//        		controlloGravita(x-1,y+2);
+//        		break;
+//        	case DiscescaDoppioSaltoSX:
+//        		setY(y-2);
+//        		controlloGravita(x-1,y-2);
+//        		break;
+        		
+        if(up){
+            	    if ((!(world.getCell(x-1, y) instanceof EnvironmentGround)) &&x>=0)
+	                {
+	                		
+	                	setX(x - 1);
+	                	System.out.println("UP "+getX()+" "+getY());
+	//                	world.update();
+		                
+	//	                controlloGravità(x-1,y);
+		                
+	                }
+	                else
+	                {
+	                	System.out.println("UP ELSE "+getX()+" "+getY());
+	                	System.out.print("stop su");    
+	                }
+            	}
+	                break;
+                
+            	
+//            	break;
+        }
+//            case DOWN1:
+//            	if(GamePanel.runningDW==true){
+//            	if (((!(world.getCell(x+1, y) instanceof EnvironmentGround)) && x<world.getHeight()-1))
+//                {
+////            		if(world.getCell(x+1, y) instanceof EnvironmentElevator)
+////            		{
+////            			System.out.println("down "+x+" "+y);
+////                		setX(x + 1);
+////            		}
+////            		else
+////            		{
+//            			System.out.println("down "+x+" "+y);
+//            			setX(x + 1);
+//            		controlloGravita(x+1,y);
+////            		}
+//            		
+//            		
+//            		
+//                }
+//            	break;}
+//            	else{
+//            		break;}
+                
+            case DOWN:{
+            	if(GamePanel.runningDW==true)
+            	{
+            		if (((!(world.getCell(x+1, y) instanceof EnvironmentGround)) && (!(world.getCell(x+1, y) instanceof EnvironmentElevator))
+            				&& x<world.getHeight()-1))
+            		{
+//            			if(world.getCell(x+1, y) instanceof EnvironmentElevator)
+//            			{
+//            				System.out.println("down "+x+" "+y);
+//              	  		setX(x + 1);
+//            			}
+//            			else
+//            			{
+            				setX(x + 1);
+            				System.out.println("down "+x+" "+y);
+            				controlloGravita(x+1,y);
+//            			}
+            		}
+            		else
+            		{
+            			System.out.println("down ELSE"+x+" "+y);
+            			System.out.print("stop giu");
+            		}
+            	
+            		break;
+            	}
+            	else
+            	{
+					break;
+				}
+        }
+//            	if (y > 0 &&( !(world.getCell(x, y - 1) instanceof EnvironmentGround)&& !(world.getCell(x, y - 1) instanceof EnvironmentElevator) && !(world.getCell(x, y - 1) instanceof Empty)))
+//                {
+//                	if(world.getCell(x, y - 1) instanceof EnvironmentStairway && !(world.getCell(x, y - 1) instanceof Empty)){
+//                	setY(y + 1);
+//                	try {
+//						Thread.sleep(1000);
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//                	setX(x + 1);
+//                	try {
+//						Thread.sleep(1000);
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//                	setY(y + 1);
+//                    }
+//                }
+//                
+//            	else
+//                {
+//            		ScalaLife();
+//            		
+//            		
+//            		
+//                }
+                
+            	
+            	
+            	
+            case LEFT:{
+            	if(GamePanel.runningSX==true)
+            	{
+            		if (!(world.getCell(x, y-1) instanceof EnvironmentGround) && y>=0)
+            		{
+            			System.out.println("left "+x+" "+y);
+            			setY(y - 1);
+            			controlloGravita(x,y-1);
+            		}
+            		else
+            		{
+            			System.out.println("left ELSE"+x+" "+y);
+            			System.out.print("stop left");
+	               
+            		}
+            		break;
+            	}
+            	break;}
+            case RIGHT:{
+//            	if(GamePanel.runningDX==true)
+            	{
+            		if (!(world.getCell(x, y+1) instanceof EnvironmentGround) && y<world.getWidth()-1)
+            		{
+            			System.out.println("right "+x+" "+y);
+            			setY(y + 1);
+            			controlloGravita(x,y+1);
+            		}
+            		else
+            		{
+            			System.out.println("right ELSE"+x+" "+y);
+            			System.out.print("stop right");
+            		}
+            		break;
+            	}
+//            	else
+//            	{
+//            		break;
+//            	}
+            	}
+            case DOPPIOSALTODX:
+            {
+            	if ((!(world.getCell(x-1, y) instanceof EnvironmentGround)) &&x>=0){
+            		System.out.println("CIAOOOOO");
+            		
+            			setX(x -1);
+//            			
+//            			try {
+//							Thread.sleep(50);
+//						} catch (InterruptedException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//            			world.update();
+            			setY(y + 1);
+//            			try {
+//						Thread.sleep(50);
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+            		//	world.update();
+//            			setY(y + 2);
+//            			try {
+//							Thread.sleep(10);
+//						} catch (InterruptedException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//            			
+//            			
+//            			controlloGravità(x-1, y+2);
+            			
+            			
+            			
+            			
+            
+            	}
+            	break;
+            }
+            case DOPPIOSALTOSX:{
+            	if ((!(world.getCell(x-1, y) instanceof EnvironmentGround)) &&x>=0){
+            		System.out.println("CIAOOOOO");
+            		
+            			setX(x -1);
+//            			
+//            			try {
+//							Thread.sleep(50);
+//						} catch (InterruptedException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//            			world.update();
+            			setY(y - 1);
+//         
+            		}
+            			break;
+           }
+            case STOP:
+                break;
+            default:
+                throw new RuntimeException("Direction not supported " + direction);
+        }
+    }
+
+	public void controlloGravita(int x, int y) {
+
+		while((! (world.getCell(x+1, y) instanceof EnvironmentGround)) 
+		   && (! (world.getCell(x+1, y) instanceof EnvironmentElevator)))
+		{
+			setX(x + 1);
+			System.out.println("downWHILE "+x+" "+y);	
+			x++;
+			world.update();
+			
+		}
+		//setX(x - 1);
+	}
+
+	public abstract int getLife() ;
+	public abstract void setLife(int life) ;
+	public abstract void setScore(int money);
+	public abstract int getScore();
+    // fare altra classe
+    
+    
+}

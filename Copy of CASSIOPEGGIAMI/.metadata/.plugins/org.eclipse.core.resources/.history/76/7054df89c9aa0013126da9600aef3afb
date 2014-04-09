@@ -1,0 +1,46 @@
+package logica;
+
+
+import Grafica.*;
+public interface Character extends StaticObject
+{
+
+    /**
+     * @uml.property  name="DOWN" readOnly="true"
+     */
+    public static final int DOWN = 1;
+    public static final int DOPPIOSALTODX = 4;
+
+    /**
+     * @uml.property  name="LEFT" readOnly="true"
+     */
+    public static final int LEFT = 2;
+
+    /**
+     * @uml.property  name="RIGHT" readOnly="true"
+     */
+    public static final int RIGHT = 3;
+
+    public static final int STOP = -1;
+
+    /**
+     * @uml.property  name="UP" readOnly="true"
+     */
+    public static final int UP = 0;
+    public static final int DiscescaDoppioSaltoDX = 5;
+    public static final int DOPPIOSALTOSX = 6;
+    public static final int DiscescaDoppioSaltoSX = 7;
+    /**
+     */
+   
+    public abstract void reset();
+
+    /**
+     */
+    public abstract void setDirection(int direction);
+
+    /**
+     */
+    public abstract void update();
+
+}

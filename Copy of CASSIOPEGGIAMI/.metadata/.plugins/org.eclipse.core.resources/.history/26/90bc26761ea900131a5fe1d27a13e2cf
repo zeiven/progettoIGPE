@@ -1,0 +1,409 @@
+package Grafica;
+
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.image.RenderedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Observer;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.swing.ImageIcon;
+import javax.swing.JPanel;
+
+import logica.Cassiopea;
+import logica.Character;
+import logica.Chest;
+import logica.EnvironmentElevator;
+import logica.EnvironmentGround;
+import logica.EnvironmentStairway;
+import logica.GameManager;
+import logica.Key;
+import logica.Money;
+import logica.Monster;
+import logica.StaticObject;
+import logica.World;
+
+
+public class GamePanel extends JPanel
+{
+    /**
+	 * 
+	 */
+	public static Image imag=null;
+	private static final long serialVersionUID = 1L;
+
+	private final class RepainterThread extends Thread
+    {
+        private final GameManager gameManager;
+
+        private RepainterThread(final GameManager gameManager)
+        {
+            super("Repainter");
+            this.gameManager = gameManager;
+        }
+
+        @Override
+        public void run()
+        {
+            int switchImages = 0;
+//            running=false;
+            gameManager.update();
+            while (running )
+            {
+            	System.out.println(cassiopea.getX()+" "+cassiopea.getY());
+
+
+                if (gameManager.isGameOver() || gameManager.isLevelOver())
+                {
+                    running = false;
+                    continue;
+                }
+                
+                
+                
+                int direction = gameManager.getCassiopea().getDirection();
+//                switch(direction){
+//                case Character.DOWN
+                
+                switch (direction)
+                {
+                    case Character.UP:
+                        dXCassiopea = TILE_SIZE;
+                        dYCassiopea = 0;
+                        break;
+                    case Character.DOWN:
+                        dXCassiopea = -TILE_SIZE;
+                        dYCassiopea = 0;
+                        break;
+                    case Character.LEFT:
+                        dYCassiopea = TILE_SIZE;
+                        dXCassiopea = 0;
+                        break;
+                    case Character.RIGHT:
+                        dYCassiopea = -TILE_SIZE;
+                        dXCassiopea = 0;
+                        break;
+                }
+                for (int i = 0; i < ANIMATION_STEPS; i++)
+                {
+                    if (switchImages == 3)
+                    {
+                    	cassiopeaImage = imageProvider.Cassiopea();
+                        switchImages = 0;
+                        
+                    }
+                    else
+                    {
+                    	cassiopeaImage = imageProvider.getCassiopeaDirection(direction);
+                        switchImages++;
+                    }
+                    switch (direction)
+                    {
+                        case Character.UP:{
+                            dXCassiopea -= TILE_SIZE / ANIMATION_STEPS;
+                           
+                            break;
+                            }
+                        case Character.DOWN:{
+                            dXCassiopea += TILE_SIZE / ANIMATION_STEPS;
+                           
+                            break;}
+                        case Character.LEFT:{
+                            dYCassiopea -= TILE_SIZE / ANIMATION_STEPS;
+                            break;}
+                        case Character.RIGHT:{
+                            dYCassiopea += TILE_SIZE / ANIMATION_STEPS;
+                            break;}
+                        
+                    }
+                  
+                    
+                    
+                    repaint();
+                    try
+                    {
+                        Thread.sleep(50);
+                    }
+                    catch (final InterruptedException e)
+                    {
+                        //do nothing
+                    }
+                }
+                }
+            
+            if (gameManager.isGameOver())
+            {
+                mainFrame.handleGameOver();
+            }
+            if (gameManager.isLevelOver())
+            {
+                mainFrame.handleLevelOver();
+            }
+        }
+    }
+
+    private static final int ANIMATION_STEPS = 5;
+
+    static final int PILL_OFFSET;
+
+    static final int PILL_SIZE = 10;
+
+    static final int SUPERPILL_OFFSET;
+
+    static final int SUPERPILL_SIZE = 24;
+
+    static final int TILE_SIZE = 50;
+
+    static
+    {
+        PILL_OFFSET = (TILE_SIZE - PILL_SIZE) / 2;
+        SUPERPILL_OFFSET = (TILE_SIZE - SUPERPILL_SIZE) / 2;
+    }
+
+    private int dXCassiopea;
+
+    private int dYCassiopea;
+    private boolean nonPremuto;
+    private final GameManager gameManager;
+
+    private final ImageProvider imageProvider;
+
+    private final MainFrame mainFrame;
+
+    private Image cassiopeaImage;
+
+    private final Collection<Monster> monsters;
+
+    private final RepainterThread repainterThread;
+
+    private  boolean running = false;
+
+    int offset;
+
+    final Cassiopea cassiopea;
+
+    final int vOffset = 100;
+
+    public GamePanel(final GameManager gameManager, final MainFrame mainFrame)
+    {
+        this.gameManager = gameManager;
+        this.mainFrame = mainFrame;
+        cassiopea = gameManager.getCassiopea();
+        monsters = gameManager.getMonsters();
+        imageProvider = new ImageProvider();
+        addKeyListener(new KeyAdapter()
+            {
+                @Override
+                public void keyPressed(final KeyEvent e)
+                {System.out.println(e.getKeyCode());
+              
+                switch (e.getKeyCode())
+                    {
+                    
+                        case KeyEvent.VK_W:{
+                
+                            cassiopea.setDirection(Character.UP);
+                            running=true;
+                            
+                            break;}
+                        case KeyEvent.VK_A:{
+                            cassiopea.setDirection(Character.LEFT);
+                            running=true;
+                            break;}
+                        case KeyEvent.VK_D:{
+                        	cassiopea.setDirection(Character.RIGHT);
+                        	running=true;
+                            break;}
+                        case KeyEvent.VK_S:{
+                        	cassiopea.setDirection(Character.DOWN);
+                        	running=true;
+                            break;}
+                    }
+//                            
+                gameManager.update();
+                
+                                        repaint();
+                }
+            });
+        addKeyListener(new KeyAdapter() {
+        	@Override
+        	public void keyReleased(KeyEvent e) {
+        		// TODO Auto-generated method stub
+        		switch (e.getKeyCode())
+                {
+                
+                    case KeyEvent.VK_W:{
+            
+                        cassiopea.setDirection(Character.UP);
+                        running=false;
+                        
+                        break;}
+                    case KeyEvent.VK_A:{
+                        cassiopea.setDirection(Character.LEFT);
+                        running=false;
+                        break;}
+                    case KeyEvent.VK_D:{
+                    	cassiopea.setDirection(Character.RIGHT);
+                    	running=false;
+                        break;}
+                    case KeyEvent.VK_S:{
+                    	cassiopea.setDirection(Character.DOWN);
+                    	running=false;
+                        break;}
+                }
+//                        
+            gameManager.update();
+            repaint();
+        	}
+        	
+		});
+        //        addMouseListener(new ScreenClickMouseAdapterExtension(gameManager));
+        //        addMouseListener(new VirtualKeysMouseAdapterExtension(gameManager));
+        //        addMouseListener(new DragMouseAdapterExtension(gameManager));
+        //        addMouseMotionListener(new MouseMotionAdapterExtension());
+        repainterThread = new RepainterThread(gameManager);
+        repainterThread.start();
+    }
+
+    private void paintWorld(final Graphics g, final World currentWorld)
+    {
+        
+           for (int x = 0; x < currentWorld.getHeight(); x++)
+           {
+           	for (int y = 0; y < currentWorld.getWidth(); y++)
+            {
+                final StaticObject cell = currentWorld.getCell(x, y);
+//                if (cell instanceof EnvironmentGround || cell instanceof EnvironmentElevator || cell instanceof EnvironmentStairway)
+//                {
+//                    //g.setColor(Color.ORANGE);
+//                	g.drawImage(imageProvider.FlyingM(), x * TILE_SIZE, y * TILE_SIZE, this);
+//                    g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+//                }
+                
+                if (cell instanceof Money)
+                {
+//                	g.setColor(Color.YELLOW);
+                    g.drawImage(imageProvider.Money(), y * TILE_SIZE, x * TILE_SIZE, this);
+                    //g.fillOval(x * TILE_SIZE + SUPERPILL_OFFSET, y * TILE_SIZE + SUPERPILL_OFFSET, SUPERPILL_SIZE, SUPERPILL_SIZE);
+                }
+                else if(cell instanceof Monster)
+                {
+                	g.drawImage(imageProvider.FlyingM(), y * TILE_SIZE, x * TILE_SIZE, this);
+                	
+                	//g.fillOval(x * TILE_SIZE + SUPERPILL_OFFSET, y * TILE_SIZE + SUPERPILL_OFFSET, SUPERPILL_SIZE, SUPERPILL_SIZE);
+                }
+                else if (cell instanceof Key)
+                {
+                   g.setColor(Color.orange);
+
+//                    g.drawImage(imageProvider.Key(), x * TILE_SIZE, y * TILE_SIZE, this);
+                    g.fillOval(y * TILE_SIZE + PILL_OFFSET, x * TILE_SIZE + SUPERPILL_OFFSET, SUPERPILL_SIZE, SUPERPILL_SIZE);
+                }
+                else if (cell instanceof Chest)
+                {
+                   // g.setColor(Color.blue);
+                    
+                    g.drawImage(imageProvider.Chest(),y * TILE_SIZE + PILL_OFFSET, x * TILE_SIZE,this);
+                   
+//                    g.fillOval(x * TILE_SIZE + PILL_OFFSET, y * TILE_SIZE + SUPERPILL_OFFSET, SUPERPILL_SIZE, SUPERPILL_SIZE);
+                }
+                else if (cell instanceof EnvironmentGround)
+                {
+                    //g.setColor(Color.white);
+                	g.drawImage(imageProvider.EnvironmentGround(), y * TILE_SIZE, x * TILE_SIZE, this);
+//                    g.fillRect(x * TILE_SIZE + PILL_OFFSET, y * TILE_SIZE + PILL_OFFSET, PILL_SIZE, PILL_SIZE);
+                }
+                else if (cell instanceof EnvironmentStairway)
+                {
+                  //g.setColor(Color.darkGray);
+                	g.drawImage(imageProvider.EnvironmentStairway(), y * TILE_SIZE, x * TILE_SIZE, this);
+//                    g.fillRect(x * TILE_SIZE + PILL_OFFSET, y * TILE_SIZE + PILL_OFFSET, PILL_SIZE, PILL_SIZE);
+                }
+                else if (cell instanceof EnvironmentElevator)
+                {
+//                    g.setColor(Color.pink);
+                	g.drawImage(imageProvider.EnvironmentElevator(), y * TILE_SIZE, x * TILE_SIZE, this);
+                    g.fillOval(y * TILE_SIZE + PILL_OFFSET, x * TILE_SIZE + PILL_OFFSET, PILL_SIZE, PILL_SIZE);
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void paintComponent(final Graphics g)
+    {
+        
+    	JPanel p1= new JPanel();
+    	add(p1);
+    	
+    	//g.setColor(Color.black);
+    	 File image2 = new File("sfondoMare1.jpg");
+    	  imag=null;
+        try {
+        	
+			imag= ImageIO.read(image2);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        //g.drawImage(imag, 0,0,p1);
+        //imag.flush();
+     g.fillRect(0, 0, getWidth(), getHeight());
+     
+
+        //Disegna diagonali
+        //        g.setColor(Color.red);
+        //        g.drawLine(0, 0, getWidth(), getHeight());
+        //        g.drawLine(getWidth(), 0, 0, getHeight());
+
+        final World currentWorld = gameManager.getWorld();
+        final double hScale = getWidth() / (double) (currentWorld.getWidth() * TILE_SIZE);
+        final double vScale = getHeight() / (double) (currentWorld.getHeight() * TILE_SIZE);
+        final double scale = Math.min(hScale, vScale);
+
+        offset = (int) (currentWorld.getWidth() * TILE_SIZE * scale) + 100;
+
+        //g.setColor(Color.red);
+    	//g.drawImage(imageProvider.EnvironmentGround(), currentWorld.getWidth(), currentWorld.getHeight(),this);
+//        g.drawRect(offset + 55, vOffset, 100, 50);
+//        g.drawRect(offset, vOffset + 60, 100, 50);
+//        g.drawRect(offset + 110, vOffset + 60, 100, 50);
+//        g.drawRect(offset + 55, vOffset + 120, 100, 50);
+        System.out.println("dimensioni scale"+scale);
+        AffineTransform at = AffineTransform.getScaleInstance(hScale*2.1, vScale);
+        ((Graphics2D) g).drawRenderedImage((RenderedImage) imag,at);
+//        g.drawImage(imag, 0,0,this);
+        ((Graphics2D) g).scale(hScale, vScale);
+
+        paintWorld(g, currentWorld);
+      System.out.println("CASSIOPEA "+ cassiopea.getY() + " "+ cassiopea.getX());
+        g.drawImage(cassiopeaImage, cassiopea.getY() * TILE_SIZE + dYCassiopea, cassiopea.getX() * TILE_SIZE + dXCassiopea, this);
+       /* for (final Monster monster : monsters)
+        {
+            if (monster.getLife()>=1)
+            {
+                g.drawImage(imageProvider.FlyingM(), monster.getX() * TILE_SIZE, monster.getY() * TILE_SIZE, this);
+                
+            }
+            else
+            {
+                g.drawImage(imageProvider.JumpingM(), monster.getX() * TILE_SIZE, monster.getY() * TILE_SIZE,
+                        this);
+            }
+            
+        }*/
+        
+        
+        
+    }
+}

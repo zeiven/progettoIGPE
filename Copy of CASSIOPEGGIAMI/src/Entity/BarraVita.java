@@ -36,11 +36,11 @@ public class BarraVita {
 			30,
 			25
 		);
-//		g.drawString(
-//			cassiopea.getFire() / 100 + "/" + cassiopea.getMaxFire() / 100,
-//			30,
-//			45
-//		);
+		g.drawString(
+		Fitoplancton.contaCibo+"",
+			30,
+			45
+		);
 		
 	}
 	

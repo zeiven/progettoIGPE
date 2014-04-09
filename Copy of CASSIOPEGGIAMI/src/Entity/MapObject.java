@@ -8,6 +8,10 @@ import TileMap.mattonciniMap;
 
 import java.awt.Rectangle;
 
+import javax.swing.JButton;
+
+import sun.tools.jar.resources.jar;
+
 public abstract class MapObject {
 	
 	// mattoncini stuff
@@ -48,6 +52,7 @@ public abstract class MapObject {
 	protected int currentAction;
 	protected int previousAction;
 	protected boolean facingRight;
+	
 	
 	// movement
 	protected boolean left;

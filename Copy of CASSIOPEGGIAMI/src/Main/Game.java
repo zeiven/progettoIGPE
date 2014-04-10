@@ -2,6 +2,8 @@ package Main;
 
 import javax.swing.JFrame;
 
+import Entity.Cassiopea;
+
 public class Game {
 	
 	public static void main(String[] args) {
@@ -13,6 +15,8 @@ public class Game {
 		window.pack();
 		window.setVisible(true);
 		
+		
+			
 	}
 	
 }

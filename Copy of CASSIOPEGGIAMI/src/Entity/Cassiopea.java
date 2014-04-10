@@ -1,6 +1,8 @@
 package Entity;
 
+import Entity.Enemies.BucoNero;
 import Entity.Enemies.Onde;
+import GameState.GameStateManager;
 import TileMap.*;
 
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ import java.awt.image.BufferedImage;
 
 public class Cassiopea extends MapObject {
 	
+	public static boolean livelloBonus;
 	//CASSY
 	public int health;
 	private int maxHealth;
@@ -178,11 +181,18 @@ public class Cassiopea extends MapObject {
 			if(e instanceof Onde){
 				if(intersects(e)) {
 					setPosition(100, 100);
-					System.out.println("intersezioni onde ");
-					
+					health--;
+				livelloBonus=true;
+	
 				}
 			}
-			
+			if(e instanceof BucoNero){
+				if(intersects(e)) {
+					setPosition(100, 100);
+					
+				livelloBonus=true;
+				}
+			}
 			if(health<=0){
 				setPosition(100, 100);
 				health=5;

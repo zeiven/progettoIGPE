@@ -9,11 +9,11 @@ import java.awt.Graphics2D;
 
 import javax.imageio.ImageIO;
 
-public class Onde extends Nemico {
+public class BucoNero extends Nemico {
 	
 	private BufferedImage[] sprites;
 	
-	public Onde(mattonciniMap tm) {
+	public BucoNero(mattonciniMap tm) {
 		
 		super(tm);
 
@@ -35,7 +35,7 @@ public class Onde extends Nemico {
 			
 			BufferedImage spritesheet = ImageIO.read(
 				getClass().getResourceAsStream(
-						"/Sprites/Enemies/onde1.gif"
+						"/Sprites/Enemies/buconero1.gif"
 				)
 			);
 			

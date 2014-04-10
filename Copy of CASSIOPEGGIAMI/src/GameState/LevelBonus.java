@@ -3,7 +3,6 @@ package GameState;
 import Main.GamePanel;
 import TileMap.*;
 import Entity.*;
-import Entity.Enemies.BucoNero;
 import Entity.Enemies.Onde;
 import Entity.Enemies.PesciolinoCattivo;
 import Entity.Enemies.Riccio;
@@ -12,7 +11,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
-public class Level1State extends GameState {
+public class LevelBonus extends GameState {
 	
 	private mattonciniMap mattonciniMap; // mattoncini map
 	private Background bg;
@@ -22,27 +21,29 @@ public class Level1State extends GameState {
 	private BarraVita barraVita;
 	
 	
-	public Level1State(GameStateManager gsm) {
-		this.gsm = gsm;
+	public LevelBonus(GameStateManager gameStateManagerBONUS) {
+		System.out.println("level state bonus");
+		this.gsm = gameStateManagerBONUS;
 		init();
 	}
 	
 	public void init() {
-		
+		System.out.println("init state bonus");
 		mattonciniMap = new mattonciniMap(30);
+		
 		mattonciniMap.loadmattoncinis("/Tilesets/provaMondo.gif"); // è l'immagine intera di quello che creerà il mondo, mattoncini ecc ecc
 		mattonciniMap.loadMap("/Maps/level1-1.map"); //primo livello..fa na pocu schifu, però CAMINA !!
 		mattonciniMap.setPosition(0, 0);
 		
 		
-		bg = new Background("/Backgrounds/acquario2.bmp", 0.1);
+		bg = new Background("/Backgrounds/spiaggia2.jpg", 0.1);
 		
 		cassiopea = new Cassiopea(mattonciniMap);
 		cassiopea.setPosition(100, 100);
 		
-		popoliamoNemici();
-		barraVita= new BarraVita(cassiopea);
-		
+		//popoliamoNemici();
+		//barraVita= new BarraVita(cassiopea);
+		System.out.println("hai caricato il mondo di mammata???");
 	}
 	
 	
@@ -91,43 +92,14 @@ private void popoliamoNemici() {
 			f.setPosition(points2[i].x, points2[i].y);
 			nemici.add(f);
 		}
-		BucoNero b;
-		Point[] points4 = new Point[] {
-			new Point(200, 300),
-			
-		};
-		for(int i = 0; i < points4.length; i++) {
-			b = new BucoNero(mattonciniMap);
-			b.setPosition(points4[i].x, points4[i].y);
-			nemici.add(b);
-		}
 		Onde o;
-		Point[] points3 = new Point[] { 
-				new Point(565, 400), 
-				new Point(540, 400), 
-				new Point(525, 400), 
-				new Point(500, 400), 
-				new Point(580, 400), 
-				new Point(600, 400), 
-				new Point(630, 400), 
-				new Point(1325, 400), 
-				new Point(1300, 400), 
-				new Point(1275, 400), 
-				new Point(1250, 400), 
-				new Point(1225, 400), 
-				new Point(1200, 400), 
-				new Point(1175, 400), 
-				new Point(1150, 400), 
-				new Point(1950, 400), 
-				new Point(1975, 400), 
-				new Point(2000, 400), 
-				new Point(2025, 400), 
-				new Point(2050, 400), 
-				new Point(2075, 400), 
-				new Point(2100, 400), 
-				new Point(2125, 400), 
-				new Point(2150, 400), };
-		
+		Point[] points3 = new Point[] {
+			new Point(565, 400),
+			new Point(540, 400),
+			new Point(525, 400),
+			new Point(500, 400),
+			new Point(580, 400)
+		};
 		for(int i = 0; i < points.length; i++) {
 			o = new Onde(mattonciniMap);
 			o.setPosition(points3[i].x, points3[i].y);
@@ -155,7 +127,6 @@ private void popoliamoNemici() {
 			Nemico e = nemici.get(i);
 			e.update();}
 cassiopea.checkAttack(nemici);	
-
 	}
 	
 	public void draw(Graphics2D g) {
@@ -173,10 +144,6 @@ cassiopea.checkAttack(nemici);
 			nemici.get(i).draw(g);
 		}
 		barraVita.draw(g);
-		if(Cassiopea.livelloBonus==true){
-			gsm.currentState=gsm.LEVEL2STATE;
-			gsm.loadState(gsm.currentState);
-		}
 		
 	}
 	

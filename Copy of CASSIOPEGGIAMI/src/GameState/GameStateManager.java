@@ -4,12 +4,13 @@ import java.util.ArrayList;
 
 public class GameStateManager {
 	
-	private GameState[] gameStates;
-	private int currentState;
+	public GameState[] gameStates;
+	public int currentState;
 	
-	public static final int NUMGAMESTATES = 2;
+	public static final int NUMGAMESTATES = 3;
 	public static final int MENUSTATE = 0;
 	public static final int LEVEL1STATE = 1;
+	public static final int LEVEL2STATE = 2;
 	
 	public GameStateManager() {
 		
@@ -20,11 +21,13 @@ public class GameStateManager {
 		
 	}
 	
-	private void loadState(int state) {
+	public void loadState(int state) {
 		if(state == MENUSTATE)
 			gameStates[state] = new MenuState(this);
 		if(state == LEVEL1STATE)
 			gameStates[state] = new Level1State(this);
+		if(state == LEVEL2STATE)
+			gameStates[state] = new LevelBonus(this);
 	}
 	
 	private void unloadState(int state) {
